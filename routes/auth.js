@@ -39,7 +39,7 @@ router.post('/login', (req, res) => {
     if (!isMatch) return res.status(400).json({ error: 'Invalid password' });
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    res.json({ token });
+    res.json({ token, userId: user.id });
   });
 });
 
