@@ -56,7 +56,7 @@ npm install
 
 Pastikan struktur tabel sudah sesuai.
 
-## 5. Jalankan Server Backend
+## 6. Jalankan Server Backend
 Setelah semua siap, jalankan server dengan:
 
 ```bash
@@ -72,7 +72,7 @@ Server running on port 5000
 MySQL connected
 ```
 
-## 6. ➡️ Lanjutkan ke Instruksi di Repo Frontend
+## 7. ➡️ Lanjutkan ke Instruksi di Repo Frontend
 Backend siap menerima request dari Flutter app. Silakan lanjutkan dengan mengikuti petunjuk di repo frontend:
 
 🔗 https://github.com/luthfiren/ankey
