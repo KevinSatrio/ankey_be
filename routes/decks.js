@@ -60,4 +60,17 @@ router.post('/', (req, res) => {
     }
   );
 });
+
+router.delete('/:id', (req, res) => {
+  const deckId = req.params.id;
+  // Delete all cards with this deck id first
+  db.query('DELETE FROM cards WHERE id_deck = ?', [deckId], (err) => {
+    if (err) return res.status(500).json({ error: 'Failed to delete cards' });
+    // Then delete the deck itself
+    db.query('DELETE FROM decks WHERE deck_id = ?', [deckId], (err2) => {
+      if (err2) return res.status(500).json({ error: 'Failed to delete deck' });
+      res.json({ success: true });
+    });
+  });
+});
 module.exports = router;
