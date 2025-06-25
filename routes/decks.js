@@ -26,16 +26,18 @@ router.get('/', (req, res) => {
   });
 
   const decksWithCards = decks.map(deck => ({
-    title: deck.name,
-    deck_id: deck.deck_id,
-    flashcards: cards
-      .filter(card => card.id_deck === deck.deck_id)
-      .map(card => ({
-        question: card.question,
-        answer: card.answer,
-        image: card.image, // keep if you want, or remove
-        imageBase64: card.imageBase64, // <-- add this line
-      })),
+  title: deck.name,
+  deck_id: deck.deck_id,
+  flashcards: cards
+    .filter(card => card.id_deck === deck.deck_id)
+    .map(card => ({
+      id: card.id, // <-- Make sure this is included!
+      question: card.question,
+      answer: card.answer,
+      image: card.image,
+      imageBase64: card.imageBase64,
+      // ...other fields
+    })),
   }));
 
   res.json(decksWithCards);
