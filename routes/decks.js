@@ -14,22 +14,48 @@ router.get('/', (req, res) => {
     if (deckIds.length === 0) return res.json([]);
 
     db.query('SELECT * FROM cards WHERE id_deck IN (?)', [deckIds], (err, cards) => {
-      if (err) return res.status(500).json({ error: 'Failed to fetch cards' });
+  if (err) return res.status(500).json({ error: 'Failed to fetch cards' });
 
-      const decksWithCards = decks.map(deck => ({
-        title: deck.name,
-        deck_id: deck.deck_id,
-        flashcards: cards
-          .filter(card => card.id_deck === deck.deck_id)
-          .map(card => ({
-            question: card.question,
-            answer: card.answer,
-            image: card.image,
-          })),
-      }));
-
-      res.json(decksWithCards);
-    });
+  // Convert image BLOB to base64 string for each card
+  cards.forEach(card => {
+    if (card.image) {
+      card.imageBase64 = card.image.toString('base64');
+    } else {
+      card.imageBase64 = null;
+    }
   });
+
+  const decksWithCards = decks.map(deck => ({
+    title: deck.name,
+    deck_id: deck.deck_id,
+    flashcards: cards
+      .filter(card => card.id_deck === deck.deck_id)
+      .map(card => ({
+        question: card.question,
+        answer: card.answer,
+        image: card.image, // keep if you want, or remove
+        imageBase64: card.imageBase64, // <-- add this line
+      })),
+  }));
+
+  res.json(decksWithCards);
+});
+  });
+});
+
+router.post('/', (req, res) => {
+  const { name, timer, user_id } = req.body;
+  if (!name || !timer || !user_id) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  db.query(
+    'INSERT INTO decks (name, timer, user_id) VALUES (?, ?, ?)',
+    [name, timer, user_id],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: 'Failed to create deck' });
+      // Return the new deck_id so Flutter can use it for cards
+      res.json({ deck_id: result.insertId });
+    }
+  );
 });
 module.exports = router;
